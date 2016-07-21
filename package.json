@@ -1,0 +1,33 @@
+{
+  "name": "stud",
+  "version": "1.0.0",
+  "description": "A very simple and fast template engine for compiling and rendering HTML templates in an unopinionated fashion.",
+  "main": "dist/stud.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "mocha  ./tests/stud_tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steveesamson/stud.git"
+  },
+  "keywords": [
+    "stud",
+    "slicks",
+    "Template",
+    "Template",
+    "Engine",
+    "Template",
+    "Compiler",
+    "Template",
+    "Renderer"
+  ],
+  "author": "Steve Samson <stevee.samson@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/steveesamson/stud/issues"
+  },
+  "homepage": "https://github.com/steveesamson/stud#readme",
+  "dependencies": {
+    "strbuilder": "^1.1.0"
+  }
+}
