@@ -27,16 +27,31 @@ A very simple and fast template engine for compiling and rendering pre-compiled 
    
     /*The template will be registered with the name 'template_reg_name' */   
     var compiledTmpl = stud.compile(tmpl,'template_reg_name');  
-      
     eval(compiledTmpl);
+    
+    /*
+    * Alternatively, assynchronously
+    var  = stud.compile(tmpl,'template_reg_name', function(compiledTmpl){
+        eval(compiledTmpl);
+    });  
+    */
+      
+    
     
     stud.render('template_reg_name', data, function(rendered){
     
     /*here is the rendered template.*/
         console.log(rendered);
         
-    });    
+    }); 
+       
+    /*
+       Alternatively,synchronously
+       var rendered = stud.render('template_reg_name', data);
         
+        console.log(rendered);
+        
+     */
 
 ```
 
