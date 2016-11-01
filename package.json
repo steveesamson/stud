@@ -29,5 +29,9 @@
   "homepage": "https://github.com/steveesamson/stud#readme",
   "dependencies": {
     "strbuilder": "^1.1.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
   }
 }
