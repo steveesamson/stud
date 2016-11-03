@@ -70,6 +70,8 @@
         };
 
         if (isString(tmplString) && isString(tmplName)) {
+
+            tmplString = tmplString.replace(/\s+/g," ");
             if (cb) {
                 cb(compileNow(tmplString, tmplName));
             } else return compileNow(tmplString, tmplName);
