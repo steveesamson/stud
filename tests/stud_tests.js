@@ -85,7 +85,7 @@ describe("#Stud Test Cases", function () {
             stud.__express(__dirname + '/user.stud', data, function (e, res) {
                 if (e) {
                     console.log(e.toString());
-
+                    return;
                     //done();
                 }
                 expect(res).to.be.equal(shouldRender);

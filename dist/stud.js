@@ -20,10 +20,29 @@
         },
         isString = function (o) {
             return typeof o === 'string';
+        },
+        stringbuilder = function (initialString) {
+            var content = [];
+            (initialString && content.push(initialString));
+
+            return {
+                append: function (text) {
+                    content.push(text);
+                    this.length = content.length;
+                    return this;
+                },
+                length: content.length,
+                toString: function () {
+                    return content.join('');
+                }
+            };
+
         };
+
     stud.fn = stud.prototype;
-    stud.fn.buffer = function () {
-        return require('strbuilder')();
+    stud.fn.buffer = function (startString) {
+
+        return stringbuilder(startString);
     };
     stud.fn.render = function (name, data, cb) {
         var str = this.cache[name](data);
@@ -45,22 +64,23 @@
 
         var compileNow = function (template, name) {
 
-            var re = /([^{]*)?(\{(\w+)\})([^{]*)?/ig, sb = require('strbuilder')();
+            var re = /([^{]*)?(\{(\w+)\})?([^{]*)?/ig,
+                sb = require('strbuilder')();
             template.replace(
                 re,
                 function ($0, $1, $2, $3, $4) {
                     if ($1) {
                         if (sb.length) sb.append(".append(\"" + $1 + "\")");
-                        else  sb.append("b.append(\"" + $1 + "\")");
+                        else sb.append("b.append(\"" + $1 + "\")");
                     }
                     if ($3) {
                         if (sb.length) sb.append(".append(x['" + $3 + "'])");
-                        else  sb.append("b.append(x['" + $3 + "'])");
+                        else sb.append("b.append(x['" + $3 + "'])");
                     }
 
                     if ($4) {
                         if (sb.length) sb.append(".append(\"" + $4 + "\")");
-                        else  sb.append("b.append(\"" + $4 + "\")");
+                        else sb.append("b.append(\"" + $4 + "\")");
                     }
 
                     return;
@@ -71,7 +91,10 @@
 
         if (isString(tmplString) && isString(tmplName)) {
 
-            tmplString = tmplString.replace(/\s+/g," ");
+            tmplString = tmplString.trim().replace(/"/g, "'");
+            tmplString = tmplString.replace(/[\n\r]/g, ' ');
+            tmplString = tmplString.replace(/\s+/g, ' ');
+
             if (cb) {
                 cb(compileNow(tmplString, tmplName));
             } else return compileNow(tmplString, tmplName);
@@ -87,8 +110,12 @@
             template = template.toString();
             (function () {
 
-                var re = /([^{]*)?(\{(\w+)\})([^{]*)?/ig,
+                var re = /([^{]*)?(\{(\w+)\})?([^{]*)?/ig,
                     sb = require('strbuilder')();
+
+                template = template.trim().replace(/"/g, "'");
+                template = template.replace(/[\n\r]/g, ' ');
+                template = template.replace(/\s+/g, ' ');
 
                 template.replace(
                     re,
