@@ -10,19 +10,6 @@ describe("#Stud Test Cases", function () {
     before(function (done) {
         stud = require('../dist/stud');
         done();
-        //
-        //
-        ///*The template will be registered with the name 'template_reg_name' */
-        //var compiledTmpl = stud.compile(tmpl,'template_reg_name');
-        //
-        //eval(compiledTmpl);
-        //
-        //stud.render('template_reg_name', data, function(rendered){
-        //
-        //    /*here is the rendered template.*/
-        //    console.log(rendered);
-        //
-        //});
     });
 
     describe("#Ensure Stud was loaded", function () {

@@ -1,24 +1,12 @@
 /**
  * Created by steve on 7/21/16.
  */
-(function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        define([], factory);
-    } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory();
-    } else {
-        root.stud = factory();
-    }
-}(this, function () {
+;
+(function (base, exports) {
 
-    var isStud = function (o) {
-            return o instanceof stud;
-        },
-        stud = function () {
-            if (!isStud(this)) return new stud();
-            this.cache = {};
-        },
-        isString = function (o) {
+    const RE = /([^{]*)?(\{(\w+)\})?([^{]*)?/ig;
+
+    var isString = function (o) {
             return typeof o === 'string';
         },
         stringbuilder = function (initialString) {
@@ -37,22 +25,49 @@
                 }
             };
 
+        },
+        renderString = function (templateString, options, cb) {
+            var sb = stringbuilder();
+
+            templateString = templateString.trim().replace(/"/g, "'");
+            templateString = templateString.replace(/[\n\r]/g, ' ');
+            templateString = templateString.replace(/\s+/g, ' ');
+
+            templateString.replace(
+                RE,
+                function ($0, $1, $2, $3, $4) {
+                    if ($1) {
+                        sb.append($1);
+                    }
+                    if ($3) {
+                        sb.append(options[$3]);
+                    }
+
+                    if ($4) {
+                        sb.append($4);
+                    }
+
+                    return;
+                }
+            );
+            cb && cb(false, sb.toString());
         };
 
-    stud.fn = stud.prototype;
-    stud.fn.buffer = function (startString) {
+
+    exports.cache = {};
+    exports.buffer = function (startString) {
 
         return stringbuilder(startString);
     };
-    stud.fn.render = function (name, data, cb) {
+    exports.render = function (name, data, cb) {
         var str = this.cache[name](data);
         if (cb) cb(str);
         else return str;
     };
-    stud.fn.isRegistered = function (name) {
+    exports.isRegistered = function (name) {
         return !!this.cache[name];
     };
-    stud.fn.register = function (name, fn) {
+    exports.register = function (name, fn) {
         if (!name || !fn || !(typeof fn === 'function')) {
             console.error("Cannot register template...");
             return;
@@ -60,14 +75,13 @@
         this.cache[name] = fn;
     };
 
-    stud.fn.compile = function (tmplString, tmplName, cb) {
+    exports.compile = function (tmplString, tmplName, cb) {
 
         var compileNow = function (template, name) {
 
-            var re = /([^{]*)?(\{(\w+)\})?([^{]*)?/ig,
-                sb = require('strbuilder')();
+            var sb = require('strbuilder')();
             template.replace(
-                re,
+                RE,
                 function ($0, $1, $2, $3, $4) {
                     if ($1) {
                         if (sb.length) sb.append(".append(\"" + $1 + "\")");
@@ -101,44 +115,21 @@
         }
 
     };
-    stud.fn.__express = function (filePath, options, cb) { // define the template engine
+    exports.template = function (templateString, options, cb) {
+
+        renderString(templateString, options, cb);
+
+    };
+    exports.__express = function (filePath, options, cb) { // define the template engine
 
         require('fs').readFile(filePath, function (err, template) {
 
             if (err) return cb(new Error(err));
 
             template = template.toString();
-            (function () {
-
-                var re = /([^{]*)?(\{(\w+)\})?([^{]*)?/ig,
-                    sb = require('strbuilder')();
-
-                template = template.trim().replace(/"/g, "'");
-                template = template.replace(/[\n\r]/g, ' ');
-                template = template.replace(/\s+/g, ' ');
-
-                template.replace(
-                    re,
-                    function ($0, $1, $2, $3, $4) {
-                        if ($1) {
-                            sb.append($1);
-                        }
-                        if ($3) {
-                            sb.append(options[$3]);
-                        }
-
-                        if ($4) {
-                            sb.append($4);
-                        }
-
-                        return;
-                    }
-                );
-                cb && cb(false, sb.toString());
-            })();
+            renderString(template, options, cb);
         });
-
     };
 
-    return stud();
-}));
+
+})(this, (typeof exports === "undefined" ? this['stud'] : exports));
