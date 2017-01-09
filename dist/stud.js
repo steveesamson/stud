@@ -33,6 +33,10 @@
                 length: content.length,
                 toString: function () {
                     return content.join('');
+                },
+                clear:function(){
+                    content.splice(0, content.length);
+                    return this;
                 }
             };
 
@@ -78,10 +82,25 @@
         return stringbuilder(baseString);
     };
     stud.fn.render = function (name, data, cb) {
+        if(!this.isRegistered(name)){
+            var notFoundError = "Template '" + name + "' was not registered";
+            if(cb) {
+
+                cb(notFoundError);
+
+            }else{
+
+                throw Error(notFoundError);
+
+            }
+            return;
+        }
         var str = this.cache[name](data);
-        if (cb) cb(str);
+
+        if (cb) cb(false, str);
         else return str;
     };
+
     stud.fn.isRegistered = function (name) {
         return !!this.cache[name];
     };
@@ -93,46 +112,47 @@
         this.cache[name] = fn;
     };
 
-    stud.fn.compile = function (tmplString, tmplName, cb) {
+     stud.fn.compile = function (tmplString, tmplName, cb) {
 
-        var compileNow = function (template, name) {
+         var compileNow = function (template, name) {
 
-            var sb = stringbuilder();
-            template.replace(
-                RE,
-                function ($0, $1, $2, $3, $4) {
-                    if ($1) {
-                        if (sb.length) sb.append(".append(\"" + $1 + "\")");
-                        else sb.append("b.append(\"" + $1 + "\")");
-                    }
-                    if ($3) {
-                        if (sb.length) sb.append(".append(x['" + $3 + "'])");
-                        else sb.append("b.append(x['" + $3 + "'])");
-                    }
+             var sb = stringbuilder();
+             template.replace(
+                 RE,
+                 function ($0, $1, $2, $3, $4) {
+                     if ($1) {
+                         if (sb.length) sb.append(".append(\"" + $1 + "\")");
+                         else sb.append("b.append(\"" + $1 + "\")");
+                     }
+                     if ($3) {
+                         if (sb.length) sb.append(".append(x['" + $3 + "'])");
+                         else sb.append("b.append(x['" + $3 + "'])");
+                     }
 
-                    if ($4) {
-                        if (sb.length) sb.append(".append(\"" + $4 + "\")");
-                        else sb.append("b.append(\"" + $4 + "\")");
-                    }
+                     if ($4) {
+                         if (sb.length) sb.append(".append(\"" + $4 + "\")");
+                         else sb.append("b.append(\"" + $4 + "\")");
+                     }
 
-                    return;
-                }
-            );
-            return "(function(c){var b = c.buffer();c.register(\"" + name + "\",function(x){" + sb.toString() + "; return b.toString();});}(stud));";
-        };
+                     return;
+                 }
+             );
+             return "(function(c){c.register(\"" + name + "\",function(x){var b = c.buffer('');" + sb.toString() + "; return b.toString();});}(stud));";
+         };
 
-        if (isString(tmplString) && isString(tmplName)) {
+         if (isString(tmplString) && isString(tmplName)) {
 
-            tmplString = tmplString.trim().replace(/"/g, "'");
-            tmplString = tmplString.replace(/[\n\r]/g, ' ');
-            tmplString = tmplString.replace(/\s+/g, ' ');
+             tmplString = tmplString.trim().replace(/"/g, "'");
+             tmplString = tmplString.replace(/[\n\r]/g, ' ');
+             tmplString = tmplString.replace(/\s+/g, ' ');
 
-            if (cb) {
-                cb(compileNow(tmplString, tmplName));
-            } else return compileNow(tmplString, tmplName);
-        }
+             if (cb) {
+                 cb(compileNow(tmplString, tmplName));
+             } else return compileNow(tmplString, tmplName);
+         }
 
-    };
+     };
+
     stud.fn.__express = function (filePath, options, cb) { // define the template engine
 
         require('fs').readFile(filePath, function (err, template) {
