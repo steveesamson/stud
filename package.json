@@ -1,6 +1,6 @@
 {
   "name": "stud",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A very simple and fast template engine for compiling and rendering HTML templates in an unopinionated fashion.",
   "main": "dist/stud.js",
   "license": "MIT",
