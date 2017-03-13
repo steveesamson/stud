@@ -1,5 +1,6 @@
 /**
  * Created by steve on 7/21/16.
+ * Update by Steve on 13th March, 2017
  */
 (function (factory) {
 
@@ -65,7 +66,12 @@
                     return;
                 }
             );
-            cb && cb(false, sb.toString());
+            if(cb){
+                cb(false, sb.toString());
+            }else
+            {
+                return sb.toString();
+            }
         },
         stud = function () {
             if (!isStud(this)) return new stud();
@@ -112,46 +118,46 @@
         this.cache[name] = fn;
     };
 
-     stud.fn.compile = function (tmplString, tmplName, cb) {
+    stud.fn.compile = function (tmplString, tmplName, cb) {
 
-         var compileNow = function (template, name) {
+        var compileNow = function (template, name) {
 
-             var sb = stringbuilder();
-             template.replace(
-                 RE,
-                 function ($0, $1, $2, $3, $4) {
-                     if ($1) {
-                         if (sb.length) sb.append(".append(\"" + $1 + "\")");
-                         else sb.append("b.append(\"" + $1 + "\")");
-                     }
-                     if ($3) {
-                         if (sb.length) sb.append(".append(x['" + $3 + "'])");
-                         else sb.append("b.append(x['" + $3 + "'])");
-                     }
+            var sb = stringbuilder();
+            template.replace(
+                RE,
+                function ($0, $1, $2, $3, $4) {
+                    if ($1) {
+                        if (sb.length) sb.append(".append(\"" + $1 + "\")");
+                        else sb.append("b.append(\"" + $1 + "\")");
+                    }
+                    if ($3) {
+                        if (sb.length) sb.append(".append(x['" + $3 + "'])");
+                        else sb.append("b.append(x['" + $3 + "'])");
+                    }
 
-                     if ($4) {
-                         if (sb.length) sb.append(".append(\"" + $4 + "\")");
-                         else sb.append("b.append(\"" + $4 + "\")");
-                     }
+                    if ($4) {
+                        if (sb.length) sb.append(".append(\"" + $4 + "\")");
+                        else sb.append("b.append(\"" + $4 + "\")");
+                    }
 
-                     return;
-                 }
-             );
-             return "(function(c){c.register(\"" + name + "\",function(x){var b = c.buffer('');" + sb.toString() + "; return b.toString();});}(stud));";
-         };
+                    return;
+                }
+            );
+            return "(function(c){c.register(\"" + name + "\",function(x){var b = c.buffer('');" + sb.toString() + "; return b.toString();});}(stud));";
+        };
 
-         if (isString(tmplString) && isString(tmplName)) {
+        if (isString(tmplString) && isString(tmplName)) {
 
-             tmplString = tmplString.trim().replace(/"/g, "'");
-             tmplString = tmplString.replace(/[\n\r]/g, ' ');
-             tmplString = tmplString.replace(/\s+/g, ' ');
+            tmplString = tmplString.trim().replace(/"/g, "'");
+            tmplString = tmplString.replace(/[\n\r]/g, ' ');
+            tmplString = tmplString.replace(/\s+/g, ' ');
 
-             if (cb) {
-                 cb(compileNow(tmplString, tmplName));
-             } else return compileNow(tmplString, tmplName);
-         }
+            if (cb) {
+                cb(compileNow(tmplString, tmplName));
+            } else return compileNow(tmplString, tmplName);
+        }
 
-     };
+    };
 
     stud.fn.__express = function (filePath, options, cb) { // define the template engine
 

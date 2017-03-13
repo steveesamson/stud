@@ -9,6 +9,7 @@ describe("Stud", function () {
 
     before(function (done) {
         stud = require('../dist/stud');
+        global.stud = stud;
         done();
     });
 
@@ -36,6 +37,7 @@ describe("Stud", function () {
 
         it("Expect compiledTmpl not to be null", function () {
             compiledTmpl = stud.compile(tmpl, "test_template.stud");
+
             expect(compiledTmpl).not.to.be.equal(null);
         });
 
@@ -57,7 +59,8 @@ describe("Stud", function () {
     describe(".render to render template with Stud", function () {
 
         it("Expect res to be equal to shouldRender", function (done) {
-            stud.render('test_template.stud', data, function (res) {
+            stud.render('test_template.stud', data, function (e, res) {
+
                 expect(res).to.be.equal(shouldRender);
                 done();
             });
