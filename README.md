@@ -1,5 +1,5 @@
 # Stud 
-A very simple and fast template engine for compiling and rendering pre-compiled HTML templates in an unopinionated runtime fashion.
+A very simple and fast template engine for compiling and rendering pre-compiled HTML templates in an unopinionated fashion.
 
 ## Installation
 ```cli
