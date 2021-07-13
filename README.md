@@ -5,7 +5,8 @@ A very simple and fast template engine for compiling and rendering pre-compiled 
 ```cli
     
     npm install stud
-
+    or
+    yarn install stud
 ```
 
 
